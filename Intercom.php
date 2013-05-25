@@ -193,6 +193,7 @@ class Intercom
      * @param  long   $createdAt         UNIX timestamp describing the date and time when the user was created (optional)
      * @param  string $lastSeenIp        The last IP address where the user was last seen (optional)
      * @param  string $lastSeenUserAgent The last user agent of the user's browser (optional)
+     * @param  array  $companies         The list of companies to which our user belongs (optional)
      * @param  long   $lastRequestAt     UNIX timestamp of the user's last request (optional)
      * @param  string $method            HTTP method, to be used by updateUser()
      * @return object
@@ -204,41 +205,50 @@ class Intercom
                                $createdAt = null,
                                $lastSeenIp = null,
                                $lastSeenUserAgent = null,
+                               $companies = array(),
                                $lastRequestAt = null,
-                               $method = 'POST')
+                               $sessionCount = null,
+                               $method = 'POST'
+    )
     {
         $data = array();
 
         $data['user_id'] = $id;
 
-        if (!empty($email)) {
+        if (!is_null($email)) {
             $data['email'] = $email;
         }
 
-        if (!empty($name)) {
+        if (!is_null($name)) {
             $data['name'] = $name;
         }
 
-        if (!empty($createdAt)) {
+        if (!is_null($createdAt)) {
             $data['created_at'] = $createdAt;
         }
 
-        if (!empty($lastSeenIp)) {
+        if (!is_null($lastSeenIp)) {
             $data['last_seen_ip'] = $lastSeenIp;
         }
 
-        if (!empty($lastSeenUserAgent)) {
+        if (!is_null($lastSeenUserAgent)) {
             $data['last_seen_user_agent'] = $lastSeenUserAgent;
         }
 
-        if (!empty($lastRequestAt)) {
+        if (!is_null($lastRequestAt)) {
             $data['last_request_at'] = $lastRequestAt;
         }
-
+        if (!is_null($sessionCount)) {
+        	$data['session_count'] = $sessionCount;
+        }
+        if (!empty($companies)) {
+        	$data['companies'] = $companies;
+        }
+        
         if (!empty($customData)) {
             $data['custom_data'] = $customData;
         }
-
+        
         $path = 'users';
         return $this->httpCall($this->apiEndpoint . $path, $method, json_encode($data));
     }
@@ -263,9 +273,12 @@ class Intercom
                                $createdAt = null,
                                $lastSeenIp = null,
                                $lastSeenUserAgent = null,
-                               $lastRequestAt = null)
+                               $companies=null,
+                               $lastRequestAt = null,
+                               $sessionCount = null
+    )
     {
-        return $this->createUser($id, $email, $name, $customData, $createdAt, $lastSeenIp, $lastSeenUserAgent, $lastRequestAt, 'PUT');
+        return $this->createUser($id, $email, $name, $customData, $createdAt, $lastSeenIp, $lastSeenUserAgent, $companies, $lastRequestAt, $sessionCount, 'PUT');
     }
 
     /**
@@ -302,19 +315,19 @@ class Intercom
 
         $data['user_id'] = $userId;
 
-        if (!empty($email)) {
+        if (!is_null($email)) {
             $data['email'] = $email;
         }
 
-        if (!empty($userIp)) {
+        if (!is_null($userIp)) {
             $data['user_ip'] = $userIp;
         }
 
-        if (!empty($userAgent)) {
+        if (!is_null($userAgent)) {
             $data['user_agent'] = $userAgent;
         }
 
-        if (!empty($currentUrl)) {
+        if (!is_null($currentUrl)) {
             $data['current_url'] = $currentUrl;
         }
         $path = 'users/impressions';
